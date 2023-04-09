@@ -9,7 +9,6 @@ Tool.switch = require('./tool/switch')
 Tool.task = require('./tool/task')
 Tool.emptyJudge = require('./tool/emptyJudge')
 
-
 console.log(`loading lib modle ...`)
 Lib = {}
 Lib.cloudInv = require('./lib/cloudInv')
@@ -28,6 +27,10 @@ Combine = {}
 Combine.potato = require('./combine/potato')
 Combine.pillager = require('./combine/pillager')
 
+console.log(`loading data module ...`)
+Data = {}
+Data.headParameter = require('./data/headParameter')
+
 //解除监听的限制
 require('events').EventEmitter.defaultMaxListeners = 0
 
@@ -35,8 +38,8 @@ require('events').EventEmitter.defaultMaxListeners = 0
 //我的bot对象
 const myBot = {
   bot: null,
-  hosterName: 'sakuraminooka',
-  botName: 'xGgui',
+  hosterName: Data.headParameter.botInfo.hosterName,
+  botName: Data.headParameter.botInfo.botName,
   botState: {
     isLookAt: false,
     isDeposit: false,
@@ -48,7 +51,9 @@ const myBot = {
     isSayState: false,
 
     isPotato: false,
-    isPillager: false
+    isPillager: false,
+    isWitherSkeleton: false
+
   },
   ciItemName: null
 
@@ -56,26 +61,21 @@ const myBot = {
 
 //创建bot
 function createBot() {
-  myBot.bot = mineflayer.createBot({
-    host: 'play.islet.world',
-    port: 25565,
-    username: '1723172785@qq.com',
-    password: '344509dgh',
-    auth: 'microsoft'
+	
+    myBot.bot = mineflayer.createBot({
+    host: Data.headParameter.botInfo.host,
+    port: Data.headParameter.botInfo.port,
+    username: Data.headParameter.botInfo.username,
+    password: Data.headParameter.botInfo.password,
+    auth: Data.headParameter.botInfo.auth
   });
-
-  //单人测试
-  // bot = mineflayer.createBot({
-  //   host: '127.0.0.1',
-  //   port: 53015,
-  //   username: 'xGgui'
-  // });
 
   //登录成功
   myBot.bot.once('login', () => {
     Tool.msgFormat.titleMsg('|***************************************|');
-    Tool.msgFormat.titleMsg('|***SUCCESS LOGIN WECOME TO xGgui BOT***|');
+    Tool.msgFormat.titleMsg('|***SUCCESS LOGIN! WECOME TO MAID BOT***|');
     Tool.msgFormat.titleMsg('|***************************************|');
+    Tool.msgFormat.titleMsg(`BOTNAME: ${myBot.botName}`);
   })
 
   //登录失败
@@ -114,8 +114,18 @@ function createBot() {
     }
   })
   myBot.bot.on('autoeat_started', () => {
-    Tool.msgFormat.logMsg(myBot, '开饭了')
+    Tool.msgFormat.logMsg(myBot, '开饭了,停止工作!')
+    if(myBot.botState.isPillager)
+    Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
+    
   })
+
+  bot.on('autoeat_stopped', () => {
+    Tool.msgFormat.logMsg(myBot, '吃完了,开始工作!')
+    if(!myBot.botState.isPillager)
+    Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
+  })
+
   myBot.bot.on('health', () => {
     //血量到达20，禁用插件
     if (myBot.bot.food === 20) myBot.bot.autoEat.disable()

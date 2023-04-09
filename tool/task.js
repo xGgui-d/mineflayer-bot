@@ -27,16 +27,16 @@ function onceTask(myBot, func, select_1 = null, select_2 = null) {
 }
 
 //组合任务
-function combineTask(myBot, startFunc, stopFunc, stateName) {
+function combineTask(myBot, startFunc, stopFunc, stateName, select_1 = null) {
 
     if (!myBot.botState[stateName]) {
         myBot.botState[stateName] = true
-        startFunc(myBot)
+        startFunc(myBot,select_1)
         Tool.msgFormat.logMsg(myBot, `开启了 ${startFunc.name} 功能`)
     }
     else {
         myBot.botState[stateName] = false
-        stopFunc(myBot)
+        stopFunc(myBot,select_1)
         Tool.msgFormat.logMsg(myBot, `关闭了 ${stopFunc.name} 功能`)
     }
 }

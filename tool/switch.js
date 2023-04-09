@@ -16,17 +16,20 @@ function switchFunc(myBot, jsonMsg) {
     var whisper = new RegExp(`^(.*?) -> ${myBot.botName}: (.*?)$`, "i").exec(jsonMsg);
     //私有消息不为空
     if (!Tool.emptyJudge.isEmpty(whisper)) {
-        // console.log(`收到命令!`)
+
         username = whisper[1]
-        //console.log(`username: ${username}`)
         command = whisper[2]
-        //console.log(`command: ${command}`)
+
+        head = command.split(' ')[0]
         select_1 = command.split(' ')[1]
-        //console.log(`select_1: ${select_1}`)
         select_2 = command.split(' ')[2]
-        //console.log(`select_2: ${select_2}`)
-        command = command.split(' ')[0]
-        Tool.msgFormat.logMsg(myBot, `收到命令: ${command} ${select_1} ${select_2}`)
+
+        //console.log(`command.substr(4): ${command.substring(4)}`)
+        // console.log(`head: ${head}`)
+        // console.log(`select_1: ${select_1}`)
+        // console.log(`select_2: ${select_2}`)
+
+        Tool.msgFormat.logMsg(myBot, `收到命令: ${head} ${select_1} ${select_2}`)
 
     }
     if (!Tool.emptyJudge.isEmpty(message))
@@ -34,10 +37,10 @@ function switchFunc(myBot, jsonMsg) {
 
     //判断主人
     if (username === myBot.hosterName)
-        myBot.bot.chat(`/tell ${myBot.hosterName} 女仆收到你的命令啦！^_^`)
+        myBot.bot.chat(`/tell ${myBot.hosterName} <green>女仆收到你的命令啦！^_^</green>`)
     else return
     //判断命令
-    switch (command) {
+    switch (head) {
         case 'menu':
             Tool.task.onceTask(myBot, Lib.menu.showMenu, select_1)
             break
@@ -51,7 +54,7 @@ function switchFunc(myBot, jsonMsg) {
             Tool.task.onceTask(myBot, Lib.tp.tpaWho, select_1)
             break
         case 'say':
-            Tool.task.onceTask(myBot, Lib.say.saySome, select_1)
+            Tool.task.onceTask(myBot, Lib.say.saySome, command.substring(4))
             break
         case 'toss':
             Tool.task.onceTask(myBot, Lib.toss.toss, select_1, select_2)
@@ -61,7 +64,7 @@ function switchFunc(myBot, jsonMsg) {
             break
         case 'deposit':
             myBot.ciItemName = select_1
-            Tool.task.timeTask(myBot, () => { myBot.bot.chat('/ci put') }, 'isDeposit', 5000)
+            Tool.task.timeTask(myBot, () => { myBot.bot.chat('/ci put') }, 'isDeposit', 3000)
             break
         case 'follow':
             if (!myBot.botState.isFollow) {

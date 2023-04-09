@@ -1,3 +1,7 @@
+/*
+*袭击塔组合功能
+*/
+
 let timer = null
 
 //开始击杀怪物
@@ -7,7 +11,7 @@ function startKillPillager(myBot) {
     timer = setInterval(() => {
         equipSword(myBot)
         killAura(myBot)
-    }, 1500)//30tick
+    }, 100)//30tick 1500
 
 }
 
@@ -49,10 +53,13 @@ function equipSword(myBot) {
         'diamond_sword',
         'netherite_sword'
     ]
+
     let sword = null
+    let tmp = null
     for (let i = 0; i < 3; i++) {
-        if (myBot.bot.inventory.findInventoryItem(myBot.bot.registry.itemsByName[swords[i]].id))
-            sword = myBot.bot.inventory.findInventoryItem(myBot.bot.registry.itemsByName[swords[i]].id)
+        tmp = myBot.bot.inventory.findInventoryItem(myBot.bot.registry.itemsByName[swords[i]].id)
+        if (!Tool.emptyJudge.isEmpty(tmp))
+            sword = tmp
     }
 
     if (Tool.emptyJudge.isEmpty(sword)) {
