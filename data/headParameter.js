@@ -47,11 +47,11 @@ botInfo_03 = {
     //微软登录
     auth: 'microsoft',
     //主人id
-    hosterName: 'HeTao_2018',
+    hosterName: 'sakuraminooka',
     //女仆id
     botName: 'KLis21',
 }
 
-botInfo = botInfo_02
+botInfo = botInfo_03
 
 module.exports = { botInfo }

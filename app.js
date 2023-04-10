@@ -12,7 +12,6 @@ Tool.emptyJudge = require('./tool/emptyJudge')
 console.log(`loading lib modle ...`)
 Lib = {}
 Lib.cloudInv = require('./lib/cloudInv')
-Lib.follow = require('./lib/follow')
 Lib.lookAt = require('./lib/lookAt')
 Lib.attack = require('./lib/attack')
 Lib.toss = require('./lib/toss')
@@ -26,6 +25,13 @@ console.log(`loading combine module ...`)
 Combine = {}
 Combine.potato = require('./combine/potato')
 Combine.pillager = require('./combine/pillager')
+Combine.witherSkeleton = require('./combine/witherSkeleton')
+Combine.zombiePig = require('./combine/zombiePig')
+
+console.log(`loading single module ...`)
+Single = {}
+Single.killAura = require('./single/killAura')
+Single.lookAtPlayer = require('./single/lookAtPlayer')
 
 console.log(`loading data module ...`)
 Data = {}
@@ -40,22 +46,23 @@ const myBot = {
   bot: null,
   hosterName: Data.headParameter.botInfo.hosterName,
   botName: Data.headParameter.botInfo.botName,
+  //bot状态
   botState: {
+
     isLookAt: false,
-    isDeposit: false,
-    isFollow: false,
-    isAttack: false,
-    isTossAll: false,
-    isActBlock: false,
+    isKillAura: false,
+
     isSayMenu: false,
     isSayState: false,
 
-    isPotato: false,
-    isPillager: false,
-    isWitherSkeleton: false
+    isAutoCampfirePotato: false,
 
-  },
-  ciItemName: null
+    isAutoKillPillager: false,
+
+    isAutoKillWitherSkeleton: false,
+    isAutoCollectBoneMeal: false
+
+  }
 
 }
 
@@ -89,20 +96,7 @@ function createBot() {
     }, 60000)
   });
 
-  //窗口打开
-  myBot.bot.on("windowOpen", async (window) => {
-    let title = window.title;
-    try {
-      if (title === "{\"text\":\"上传物品\"}") {
-        Tool.task.onceTask(myBot, Lib.cloudInv.deposit, window)
-      }
-    } finally {
-      //延迟一段时间在关闭
-      setTimeout(() => {
-        window.close();
-      }, "1000");
-    }
-  });
+
 
   //加载自动吃食物插件
   myBot.bot.loadPlugin(autoeat)
@@ -115,15 +109,15 @@ function createBot() {
   })
   myBot.bot.on('autoeat_started', () => {
     Tool.msgFormat.logMsg(myBot, '开饭了,停止工作!')
-    if(myBot.botState.isPillager)
-    Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
+    // if(myBot.botState.isPillager)
+    // Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
     
   })
 
-  bot.on('autoeat_stopped', () => {
+  myBot.bot.on('autoeat_stopped', () => {
     Tool.msgFormat.logMsg(myBot, '吃完了,开始工作!')
-    if(!myBot.botState.isPillager)
-    Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
+    // if(!myBot.botState.isPillager)
+    // Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
   })
 
   myBot.bot.on('health', () => {
@@ -137,5 +131,6 @@ function createBot() {
     Tool.switch.switchFunc(myBot, jsonMsg)
   })
 }
+
 console.log(`login in server ...`)
 createBot()

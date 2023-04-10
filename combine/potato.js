@@ -9,9 +9,8 @@ let timer = null
 
 //开始烤土豆
 async function startCampfirePotato(myBot) {
-    myBot.botState.isPotato = true
     //坐上矿车
-    if(!sitOnMinecart(myBot)) return
+    sitOnMinecart(myBot)
     timer = setInterval(() => {
 
 
@@ -36,8 +35,7 @@ async function startCampfirePotato(myBot) {
 }
 
 //停止烤土豆
-function stopCampfirePotato(myBot) {
-    myBot.botState.isPotato = false
+function stopCampfirePotato() {
     //清除计时器
     clearInterval(timer)
     minecart = null
@@ -72,28 +70,22 @@ async function sitOnMinecart(myBot) {
         }
         await myBot.bot.activateEntity(minecart)
     } catch (e) {
-
+        console.log(e)
     }
 }
 
 //执行一次烤土豆
 async function actCampfire(myBot) {
-    const mcData = require('minecraft-data')(myBot.bot.version);
     //查找一个营火
     try {
-        let targetBlock = myBot.bot.findBlock({
-            point: minecart.position,//以矿车作为原点
-            matching: mcData.blocksByName['campfire'].id,
-            maxDistance: 5//32格范围之内
-        })
-        await myBot.bot.activateBlock(targetBlock)
-
+        Lib.activateBlock.actBlock(myBot, 'campfire', minecart.position)
     } catch (e) {
         Tool.msgFormat.logMsg(myBot, '没有找到营火')
         stopCampfirePotato(myBot)
     }
 
-
 }
 
-module.exports = { startCampfirePotato, stopCampfirePotato }
+
+
+module.exports = { startCampfirePotato, stopCampfirePotato, sitOnMinecart }

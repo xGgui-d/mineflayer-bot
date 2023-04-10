@@ -6,45 +6,19 @@ let timer = null
 
 //开始击杀怪物
 function startKillPillager(myBot) {
-    myBot.botState.isPillager = true;
 
     timer = setInterval(() => {
         equipSword(myBot)
-        killAura(myBot)
-    }, 100)//30tick 1500
+        Lib.attack.atk(myBot,'hostile')
+    }, 1500)//30tick 1500
 
 }
 
 //停止击杀怪物
-function stopKillPillager(myBot) {
-    myBot.botState.isPillager = false;
+function stopKillPillager() {
     clearInterval(timer)
 }
 
-//杀戮光环
-function killAura(myBot) {
-    //过滤器
-    let entityFilter
-    try {
-        entityFilter = entity => entity.type === 'hostile'
-    } catch (e) {
-        console.log(e)
-    }
-    //获取bot最近的怪物生物
-    let entity
-    entity = myBot.bot.nearestEntity(entityFilter)
-
-    if (!entity) {
-        Tool.msgFormat.logMsg(myBot, '没有实体可以攻击')
-        return;
-    }
-
-    const pos = entity.position
-    //lookat怪物，并且执行函数
-    myBot.bot.lookAt(pos, true)
-    //攻击生物
-    myBot.bot.attack(entity, true)
-}
 
 //装备剑
 function equipSword(myBot) {

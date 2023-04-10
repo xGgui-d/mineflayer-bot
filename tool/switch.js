@@ -51,47 +51,45 @@ function switchFunc(myBot, jsonMsg) {
             Tool.task.onceTask(myBot, Lib.tp.tpWhere, select_1)
             break
         case 'tpa':
-            Tool.task.onceTask(myBot, Lib.tp.tpaWho, select_1)
+            Tool.task.onceTask(myBot, Lib.tp.tpaWho, select_1 = myBot.hosterName)
             break
         case 'say':
             Tool.task.onceTask(myBot, Lib.say.saySome, command.substring(4))
             break
+        case 'tossAll':
+            Tool.task.onceTask(myBot, Lib.toss.tossAll)
+            break
+        case 'actBlock':
+            Tool.task.onceTask(myBot, Lib.activateBlock.actBlock, select_1)
+            break
         case 'toss':
             Tool.task.onceTask(myBot, Lib.toss.toss, select_1, select_2)
             break
-        case 'lookAt':
-            Tool.task.timeTask(myBot, Lib.lookAt.lookAtNearestPlayer, 'isLookAt', 10)
-            break
         case 'deposit':
-            myBot.ciItemName = select_1
-            Tool.task.timeTask(myBot, () => { myBot.bot.chat('/ci put') }, 'isDeposit', 3000)
+            Tool.task.onceTask(myBot, Lib.cloudInv.deposit, select_1)
             break
-        case 'follow':
-            if (!myBot.botState.isFollow) {
-                Lib.follow.followPlayer(myBot, true)
-                myBot.botState.isFollow = true
-            } else {
-                Lib.follow.followPlayer(myBot, false)
-                myBot.botState.isFollow = false
-            }
+        case 'lookAt':
+            Tool.task.timerTask(myBot, Single.lookAtPlayer.startLookAtPlayer, Single.lookAtPlayer.stopLookAtPlayer, 'isLookAt')
             break
         case 'attack':
-            Tool.task.timeTask(myBot, Lib.attack.atk, 'isAttack', 1000, select_1)
+            Tool.task.timerTask(myBot, Single.killAura.startKillAura, Single.killAura.stopKillAura, 'isKillAura')
             break
-        case 'tossAll':
-            Tool.task.timeTask(myBot, Lib.toss.tossAll, 'isTossAll', 5000)
+        case 'AutoCampfirePotato':
+            Tool.task.timerTask(myBot, Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato, 'isAutoCampfirePotato')
             break
-        case 'actBlock':
-            Tool.task.timeTask(myBot, Lib.activateBlock.actBlock, 'isActBlock', 500, select_1)
+        case 'AutoKillPillager':
+            Tool.task.timerTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isAutoKillPillager')
             break
-        case 'potato':
-            Tool.task.combineTask(myBot, Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato, 'isPotato')
+        case 'AutoKillWitherSkeleton':
+            Tool.task.timerTask(myBot, Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton, 'isAutoKillWitherSkeleton')
             break
-        case 'pillager':
-            Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
+        case 'AutoCollectBoneMeal':
+            Tool.task.timerTask(myBot, Combine.witherSkeleton.startCollectBoneMeal, Combine.witherSkeleton.startCollectBoneMeal, 'isAutoCollectBoneMeal')
             break
         case 'test01':
+
             break
+
         default:
             myBot.bot.chat(`/tell ${myBot.hosterName} 这不是正确的命令哦, 需要帮忙吗? 私密我输入: menu page`)
             break
