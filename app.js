@@ -60,7 +60,7 @@ const myBot = {
     isAutoKillPillager: false,
 
     isAutoKillWitherSkeleton: false,
-    isAutoCollectBoneMeal: false
+    isAutoCollectBone: false
 
   }
 
@@ -74,7 +74,8 @@ function createBot() {
     port: Data.headParameter.botInfo.port,
     username: Data.headParameter.botInfo.username,
     password: Data.headParameter.botInfo.password,
-    auth: Data.headParameter.botInfo.auth
+    auth: Data.headParameter.botInfo.auth,
+    version: '1.18'
   });
 
   //登录成功

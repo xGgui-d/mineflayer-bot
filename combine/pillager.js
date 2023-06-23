@@ -4,7 +4,7 @@
 
 let timer = null
 
-//开始击杀怪物
+/* 开始击杀怪物 */
 function startKillPillager(myBot) {
 
     timer = setInterval(() => {
@@ -14,13 +14,13 @@ function startKillPillager(myBot) {
 
 }
 
-//停止击杀怪物
+/* 停止击杀怪物 */
 function stopKillPillager() {
     clearInterval(timer)
 }
 
 
-//装备剑
+/* 装备剑 */
 function equipSword(myBot) {
     let swords = [
         'iron_sword',
@@ -43,4 +43,5 @@ function equipSword(myBot) {
 
     myBot.bot.equip(sword, "hand")
 }
+
 module.exports = { startKillPillager, stopKillPillager }

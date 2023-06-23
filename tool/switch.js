@@ -24,7 +24,7 @@ function switchFunc(myBot, jsonMsg) {
         select_1 = command.split(' ')[1]
         select_2 = command.split(' ')[2]
 
-        //console.log(`command.substr(4): ${command.substring(4)}`)
+        // console.log(`command.substr(4): ${command.substring(4)}`)
         // console.log(`head: ${head}`)
         // console.log(`select_1: ${select_1}`)
         // console.log(`select_2: ${select_2}`)
@@ -83,11 +83,11 @@ function switchFunc(myBot, jsonMsg) {
         case 'AutoKillWitherSkeleton':
             Tool.task.timerTask(myBot, Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton, 'isAutoKillWitherSkeleton')
             break
-        case 'AutoCollectBoneMeal':
-            Tool.task.timerTask(myBot, Combine.witherSkeleton.startCollectBoneMeal, Combine.witherSkeleton.startCollectBoneMeal, 'isAutoCollectBoneMeal')
+        case 'AutoCollectBone':
+            Tool.task.timerTask(myBot, Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone, 'isAutoCollectBone')
             break
         case 'test01':
-
+            Tool.task.timerTask(myBot,Combine.potato.startTossBoneMeal,Combine.potato.stopTossBoneMeal,'')
             break
 
         default:

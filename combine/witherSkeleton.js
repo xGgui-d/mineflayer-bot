@@ -1,39 +1,49 @@
-/**
-*凋零骷髅塔组合功能
-**/
 
-let timer_01 = null
-let timer_02 = null
+// ============================
+// 凋零骷髅塔组合功能
+// ============================
 
-//开始击杀凋零骷髅
+
+let timer_01 = null // 定时击杀骷髅
+let timer_02 = null // 定时存云仓
+let hasSetUp = false
+
+/* 开始击杀凋零骷髅 */
 function startKillWitherSkeleton(myBot) {
 
     timer_01 = setInterval(() => {
         equipSword(myBot)
         Lib.attack.atk(myBot, 'hostile')
-    }, 100)//速砍
+    }, 100)// 速砍
 
 }
 
-//停止击杀凋零骷髅
+/* 停止击杀凋零骷髅 */
 function stopKillWitherSkeleton() {
+
     clearInterval(timer_01)
 }
 
-//开始把骨粉放入云仓
-function startCollectBoneMeal(myBot) {
+/* 开始把骨头放入云仓 */
+function startCollectBone(myBot) {
+    //建立监听，只建立一次
+    if (!hasSetUp) {
+        Lib.cloudInv.setup_deposit(myBot, 'bone')
+        hasSetUp = true
+    }
     timer_02 = setInterval(() => {
-        Lib.cloudInv.deposit(myBot, 'bone_meal')
+        Lib.cloudInv.deposit(myBot)
     }, 2000) //最低2000
 
 }
 
-//停止把骨粉放入云仓
-function stopCollectBoneMeal() {
+/* 停止把骨头放入云仓 */
+function stopCollectBone() {
+    // console.log("停止！！")
     clearInterval(timer_02)
 }
 
-//装备剑
+/* 装备剑 */
 function equipSword(myBot) {
     let swords = [
         'iron_sword',
@@ -53,15 +63,12 @@ function equipSword(myBot) {
         Tool.msgFormat.logMsg(myBot, `身上没有铁级别以上的剑`)
         return
     }
-
     myBot.bot.equip(sword, "hand")
 }
 
 
 
-
-
 module.exports = {
     startKillWitherSkeleton, stopKillWitherSkeleton,
-    startCollectBoneMeal, stopCollectBoneMeal
+    startCollectBone, stopCollectBone
 }

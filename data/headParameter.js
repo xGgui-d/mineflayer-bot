@@ -11,7 +11,7 @@ botInfo_01 = {
     //微软登录
     auth: 'microsoft',
     //主人id
-    hosterName: 'HeTao_2018',
+    hosterName: 'KLis21',
     //女仆id
     botName: 'xGgui',
 }
@@ -25,7 +25,7 @@ botInfo_02 = {
     //女仆账号邮箱
     username: '1109010232@qq.com',
     //女仆密码
-    password: 'mstsgod123',
+    password: 'mushenyhzy9820',
     //微软登录
     auth: 'microsoft',
     //主人id
