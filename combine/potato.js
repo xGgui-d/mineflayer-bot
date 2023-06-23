@@ -2,29 +2,29 @@
 // 烤土豆组合功能
 // ========================
 
-//记录当前坐上的矿车
-let minecart = null
-//定时器
+let minecart = null // 记录当前坐上的矿车
 let timer_01 = null // 定时右键营火
 let timer_02 = null // 定时丢弃骨粉
+let timer_03 = null // 定时存入土豆
+let count = 0 // 一天24次1728个骨粉
 
 /* 开始烤土豆 */
 async function startCampfirePotato(myBot) {
-    //坐上矿车
+    // 坐上矿车
     sitOnMinecart(myBot)
     timer_01 = setInterval(() => {
 
 
-        //装备土豆
+        // 装备土豆
         let items = myBot.bot.inventory.findInventoryItem(myBot.bot.registry.itemsByName.potato.id)
-        //身上没有土豆
+        // 身上没有土豆
         if (Tool.emptyJudge.isEmpty(items)) {
             Tool.msgFormat.logMsg(myBot, `身上没有土豆了，从云仓获取`)
             myBot.bot.chat('/ci get potato 512')
             return
         }
-        
-        //当背包不足5格时，自动丢弃除土豆之外的物品
+
+        // 当背包不足5格时，自动丢弃除土豆之外的物品
         if (myBot.bot.inventory.emptySlotCount() === 0) {
             tossOther(myBot)
         }
@@ -37,30 +37,55 @@ async function startCampfirePotato(myBot) {
 
 /* 停止烤土豆 */
 function stopCampfirePotato() {
-    //清除计时器
+    // 清除计时器
     clearInterval(timer_01)
     minecart = null
 }
 
-/* 从背包中筛选出要扔的物品 */
-function tossItems(myBot, itemName) {
-    return myBot.bot.inventory.items().filter((item) => item.name != itemName)
-}
-
-/* 开始定时丢骨粉(使用前先设置自动合成骨粉) */
+/* 开始定时丢骨粉(使用前先手动设置自动合成骨粉) */
 async function startTossBoneMeal(myBot) {
+    // 循环检测当前的游戏时间
     timer_02 = setInterval(() => {
-        Lib.cloudInv.withdraw(myBot,'bone_meal',1728);
-        Lib.toss.toss(myBot,'bone_meal',1728);
-    }, 10000)  //10s
+        // 村民 2000 时间开始工作到 9000 （ 一天 0-24000 ） during 350s
+        if (myBot.bot.time.timeOfDay > 2000 && myBot.bot.time.timeOfDay < 9000) {
+            // 一次性投掷骨粉
+            Lib.cloudInv.withdraw(myBot, 'bone_meal', 1728);
+            Lib.toss.toss(myBot, 'bone_meal', 1728);
+            count++
+        } else {
+            count = 0
+        }
+    }, 14000) // 14s 丢一次1728
 
 }
 /* 停止定时丢骨粉 */
 async function stopTossBoneMeal() {
     //清除计时器
     clearInterval(timer_02)
+    count = 0
 }
 
+/* 开始把土豆放入云仓 */
+async function startCollectPotato(myBot) {
+    timer_03 = setInterval(() => {
+        // 存入毒土豆和土豆
+        Lib.cloudInv.deposit(myBot, 'poisonous_potato', false)
+        setTimeout(() => {
+            Lib.cloudInv.deposit(myBot, 'potato', false)
+        }, 1000)
+    }, 2000) //最低2000
+
+}
+
+/* 停止把土豆放入云仓 */
+function stopCollectPotato() {
+    clearInterval(timer_03)
+}
+
+/* 从背包中筛选出要扔的物品 */
+function tossItems(myBot, itemName) {
+    return myBot.bot.inventory.items().filter((item) => item.name != itemName)
+}
 
 /* 丢弃不属于土豆的东西 */
 async function tossOther(myBot) {
@@ -102,5 +127,7 @@ async function actCampfire(myBot) {
 
 }
 
-module.exports = { startCampfirePotato, stopCampfirePotato,
-     startTossBoneMeal, stopTossBoneMeal }
+module.exports = {
+    startCampfirePotato, stopCampfirePotato,
+    startTossBoneMeal, stopTossBoneMeal, startCollectPotato, stopCollectPotato
+}

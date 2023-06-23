@@ -1,4 +1,3 @@
-
 // ============================
 // 凋零骷髅塔组合功能
 // ============================
@@ -6,7 +5,7 @@
 
 let timer_01 = null // 定时击杀骷髅
 let timer_02 = null // 定时存云仓
-let hasSetUp = false
+
 
 /* 开始击杀凋零骷髅 */
 function startKillWitherSkeleton(myBot) {
@@ -26,20 +25,14 @@ function stopKillWitherSkeleton() {
 
 /* 开始把骨头放入云仓 */
 function startCollectBone(myBot) {
-    //建立监听，只建立一次
-    if (!hasSetUp) {
-        Lib.cloudInv.setup_deposit(myBot, 'bone')
-        hasSetUp = true
-    }
     timer_02 = setInterval(() => {
-        Lib.cloudInv.deposit(myBot)
+        Lib.cloudInv.deposit(myBot, 'bone', true)
     }, 2000) //最低2000
 
 }
 
 /* 停止把骨头放入云仓 */
 function stopCollectBone() {
-    // console.log("停止！！")
     clearInterval(timer_02)
 }
 

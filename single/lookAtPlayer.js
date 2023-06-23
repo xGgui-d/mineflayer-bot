@@ -1,14 +1,14 @@
-let timer
+/* 看向周围最近的玩家 */
+
+let timer = null
 
 function startLookAtPlayer(myBot, entityName = 'player') {
-    myBot.botState.isLookAt = true
     timer = setInterval(() => {
         Lib.lookAt.lookAtNearestPlayer(myBot, entityName)
     }, 10)
 }
 
-function stopLookAtPlayer(myBot) {
-    myBot.botState.isLookAt = false
+function stopLookAtPlayer() {
     clearInterval(timer)
 }
 

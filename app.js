@@ -37,39 +37,32 @@ console.log(`loading data module ...`)
 Data = {}
 Data.headParameter = require('./data/headParameter')
 
-//解除监听的限制
+// 解除监听的限制
 require('events').EventEmitter.defaultMaxListeners = 0
 
 
-//我的bot对象
+// 我的bot对象
 const myBot = {
   bot: null,
   hosterName: Data.headParameter.botInfo.hosterName,
   botName: Data.headParameter.botInfo.botName,
-  //bot状态
-  botState: {
-
-    isLookAt: false,
-    isKillAura: false,
-
-    isSayMenu: false,
-    isSayState: false,
-
-    isAutoCampfirePotato: false,
-
-    isAutoKillPillager: false,
-
-    isAutoKillWitherSkeleton: false,
-    isAutoCollectBone: false
-
+  // bot当前的工作
+  botWork: null,
+  botIsWork: false,
+  // bot建立的监听标志
+  botListener: {
+    windowOpen: false
   }
 
 }
 
-//创建bot
+// 断开连接后保存当前的工作
+let lastwork = null
+
+/* 创建bot */
 function createBot() {
-	
-    myBot.bot = mineflayer.createBot({
+
+  myBot.bot = mineflayer.createBot({
     host: Data.headParameter.botInfo.host,
     port: Data.headParameter.botInfo.port,
     username: Data.headParameter.botInfo.username,
@@ -81,9 +74,12 @@ function createBot() {
   //登录成功
   myBot.bot.once('login', () => {
     Tool.msgFormat.titleMsg('|***************************************|');
-    Tool.msgFormat.titleMsg('|***SUCCESS LOGIN! WECOME TO MAID BOT***|');
+    Tool.msgFormat.titleMsg('|***登录成功！欢迎使用梦幻女仆 BOT***|');
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg(`BOTNAME: ${myBot.botName}`);
+    // 执行掉线前的任务
+    Tool.switch.selectFunc(myBot, lastwork)
+
   })
 
   //登录失败
@@ -92,14 +88,21 @@ function createBot() {
   //重启延迟60s
   myBot.bot.on('end', () => {
     Tool.msgFormat.errMsg('BOT已与服务器断开连接，正在重连...')
+    // 保存当前的工作
+    lastwork = myBot.botWork
+    // 停止当前工作
+    Tool.switch.selectFunc(myBot, myBot.botWork)
+    // 删除所有建立的监听标志
+    myBot.botListener['windowOpen'] = false
     setTimeout(() => {
+      //再次创建bot
       createBot();
-    }, 60000)
+    }, 6000)
   });
 
 
 
-  //加载自动吃食物插件
+  // 加载自动吃食物插件
   myBot.bot.loadPlugin(autoeat)
   myBot.bot.once('spawn', () => {
     myBot.bot.autoEat.options = {
@@ -110,27 +113,25 @@ function createBot() {
   })
   myBot.bot.on('autoeat_started', () => {
     Tool.msgFormat.logMsg(myBot, '开饭了,停止工作!')
-    // if(myBot.botState.isPillager)
-    // Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
-    
-  })
 
+
+  })
   myBot.bot.on('autoeat_stopped', () => {
     Tool.msgFormat.logMsg(myBot, '吃完了,开始工作!')
-    // if(!myBot.botState.isPillager)
-    // Tool.task.combineTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isPillager')
-  })
 
+  })
   myBot.bot.on('health', () => {
     //血量到达20，禁用插件
     if (myBot.bot.food === 20) myBot.bot.autoEat.disable()
     else myBot.bot.autoEat.enable()
   })
 
-  //消息路由
+
+  // 消息路由
   myBot.bot.on('message', (jsonMsg) => {
     Tool.switch.switchFunc(myBot, jsonMsg)
   })
+
 }
 
 console.log(`login in server ...`)

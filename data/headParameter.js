@@ -52,6 +52,9 @@ botInfo_03 = {
     botName: 'KLis21',
 }
 
-botInfo = botInfo_03
+//01 xGgui
+//02 sakuraminooka
+//03 KLis21
+botInfo = botInfo_01
 
 module.exports = { botInfo }

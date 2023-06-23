@@ -1,24 +1,37 @@
-/*
-*袭击塔组合功能
-*/
+// ===============
+// 袭击塔组合功能
+// ===============
 
-let timer = null
+let timer_01 = null
+let timer_02 = null
 
 /* 开始击杀怪物 */
 function startKillPillager(myBot) {
 
-    timer = setInterval(() => {
+    timer_01 = setInterval(() => {
         equipSword(myBot)
-        Lib.attack.atk(myBot,'hostile')
+        Lib.attack.atk(myBot, 'hostile')
     }, 1500)//30tick 1500
 
 }
 
 /* 停止击杀怪物 */
 function stopKillPillager() {
-    clearInterval(timer)
+    clearInterval(timer_01)
 }
 
+/* 开始把绿宝石放入云仓 */
+function startCollectEmerald(myBot) {
+    timer_02 = setInterval(() => {
+        Lib.cloudInv.deposit(myBot, 'emerald', true)
+    }, 2000) //最低2000
+
+}
+
+/* 停止把绿宝石放入云仓 */
+function stopCollectEmerald() {
+    clearInterval(timer_02)
+}
 
 /* 装备剑 */
 function equipSword(myBot) {
@@ -44,4 +57,4 @@ function equipSword(myBot) {
     myBot.bot.equip(sword, "hand")
 }
 
-module.exports = { startKillPillager, stopKillPillager }
+module.exports = { startKillPillager, stopKillPillager, startCollectEmerald, stopCollectEmerald }

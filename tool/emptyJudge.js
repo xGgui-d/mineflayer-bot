@@ -1,4 +1,4 @@
-//判断消息是否为空
+/* 判断消息是否为空 */
 function isEmpty(v) {
     switch (typeof v) {
         case 'undefined':

@@ -1,4 +1,5 @@
-//路由函数
+/* 命令路由函数 */
+
 function switchFunc(myBot, jsonMsg) {
     //命令发起者
     let username = null
@@ -33,21 +34,25 @@ function switchFunc(myBot, jsonMsg) {
 
     }
     if (!Tool.emptyJudge.isEmpty(message))
-        console.log('\033[32m' + `[${Tool.getNowTime.nowtime()}]` + '\033[0m' + '\033[36m' + `${message[0]}` + '\033[0m')
+        Tool.msgFormat.publicMsg(message[0])
 
-    //判断主人
+    // 判断是否是主人
     if (username === myBot.hosterName)
-        myBot.bot.chat(`/tell ${myBot.hosterName} <green>女仆收到你的命令啦！^_^</green>`)
+        myBot.bot.chat(`/tell ${myBot.hosterName} <green>『女仆收到你的命令啦！^_^』`)
     else return
-    //判断命令
+    // 判断命令
+    selectFunc(myBot, head, command)
+}
+
+function selectFunc(myBot, head, command) {
     switch (head) {
         case 'menu':
             Tool.task.onceTask(myBot, Lib.menu.showMenu, select_1)
             break
-        case 'state':
+        case 'sta':
             Tool.task.onceTask(myBot, Lib.state.showState)
             break
-        case 'tp':
+        case 'tpw':
             Tool.task.onceTask(myBot, Lib.tp.tpWhere, select_1)
             break
         case 'tpa':
@@ -56,45 +61,51 @@ function switchFunc(myBot, jsonMsg) {
         case 'say':
             Tool.task.onceTask(myBot, Lib.say.saySome, command.substring(4))
             break
-        case 'tossAll':
+        case 'tossa':
             Tool.task.onceTask(myBot, Lib.toss.tossAll)
             break
-        case 'actBlock':
+        case 'actblk':
             Tool.task.onceTask(myBot, Lib.activateBlock.actBlock, select_1)
             break
         case 'toss':
             Tool.task.onceTask(myBot, Lib.toss.toss, select_1, select_2)
             break
-        case 'deposit':
+        case 'dpos':
             Tool.task.onceTask(myBot, Lib.cloudInv.deposit, select_1)
             break
-        case 'lookAt':
-            Tool.task.timerTask(myBot, Single.lookAtPlayer.startLookAtPlayer, Single.lookAtPlayer.stopLookAtPlayer, 'isLookAt')
+        case 'look':
+            Tool.task.timerTask(myBot, Single.lookAtPlayer.startLookAtPlayer, Single.lookAtPlayer.stopLookAtPlayer, head)
             break
-        case 'attack':
-            Tool.task.timerTask(myBot, Single.killAura.startKillAura, Single.killAura.stopKillAura, 'isKillAura')
+        case 'atk':
+            Tool.task.timerTask(myBot, Single.killAura.startKillAura, Single.killAura.stopKillAura, head)
             break
-        case 'AutoCampfirePotato':
-            Tool.task.timerTask(myBot, Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato, 'isAutoCampfirePotato')
+        case 'pto_fire':
+            Tool.task.timerTask(myBot, Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato, head)
             break
-        case 'AutoKillPillager':
-            Tool.task.timerTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, 'isAutoKillPillager')
+        case 'pto_bonemeal':
+            Tool.task.timerTask(myBot, Combine.potato.startTossBoneMeal, Combine.potato.stopTossBoneMeal, head)
             break
-        case 'AutoKillWitherSkeleton':
-            Tool.task.timerTask(myBot, Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton, 'isAutoKillWitherSkeleton')
+        case 'pto_potato':
+            Tool.task.timerTask(myBot, Combine.potato.startCollectPotato, Combine.potato.stopCollectPotato, head)
             break
-        case 'AutoCollectBone':
-            Tool.task.timerTask(myBot, Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone, 'isAutoCollectBone')
+        case 'pil_kill':
+            Tool.task.timerTask(myBot, Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, head)
             break
-        case 'test01':
-            Tool.task.timerTask(myBot,Combine.potato.startTossBoneMeal,Combine.potato.stopTossBoneMeal,'')
+        case 'pil_emerald':
+            Tool.task.timerTask(myBot, Combine.pillager.startCollectEmerald, Combine.pillager.stopCollectEmerald, head)
             break
-
+        case 'ws_kill':
+            Tool.task.timerTask(myBot, Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton, head)
+            break
+        case 'ws_bone':
+            Tool.task.timerTask(myBot, Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone, head)
+            break
+        case 'test':
+            break
         default:
-            myBot.bot.chat(`/tell ${myBot.hosterName} 这不是正确的命令哦, 需要帮忙吗? 私密我输入: menu page`)
+            myBot.bot.chat(`/tell ${myBot.hosterName} 这不是正确的命令哦！！！`)
             break
-
     }
 }
 
-module.exports = { switchFunc }
+module.exports = { switchFunc, selectFunc }
