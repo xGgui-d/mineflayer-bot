@@ -1,5 +1,8 @@
+const { myBot } = require("../bot")
+
+
 /* 丢弃所有物品 */
-async function tossAll(myBot) {
+async function tossAll() {
 
     var toItems = myBot.bot.inventory.items()
     try {
@@ -10,7 +13,7 @@ async function tossAll(myBot) {
 }
 
 /* 丢弃一件物品 */
-async function toss(myBot, itemName, count) {
+async function toss(itemName, count) {
 
     var toItem = myBot.bot.inventory.items().filter((item) => item.name === itemName)
     try {

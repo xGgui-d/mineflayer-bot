@@ -2,17 +2,19 @@
 // 凋零骷髅塔组合功能
 // ============================
 
+const { myBot } = require("../bot")
+
 
 let timer_01 = null // 定时击杀骷髅
 let timer_02 = null // 定时存云仓
 
 
 /* 开始击杀凋零骷髅 */
-function startKillWitherSkeleton(myBot) {
+function startKillWitherSkeleton() {
 
     timer_01 = setInterval(() => {
-        equipSword(myBot)
-        Lib.attack.atk(myBot, 'hostile')
+        equipSword()
+        Lib.attack.atk('hostile')
     }, 100)// 速砍
 
 }
@@ -24,9 +26,9 @@ function stopKillWitherSkeleton() {
 }
 
 /* 开始把骨头放入云仓 */
-function startCollectBone(myBot) {
+function startCollectBone() {
     timer_02 = setInterval(() => {
-        Lib.cloudInv.deposit(myBot, 'bone', true)
+        Lib.cloudInv.deposit('bone', true)
     }, 2000) //最低2000
 
 }
@@ -37,7 +39,7 @@ function stopCollectBone() {
 }
 
 /* 装备剑 */
-function equipSword(myBot) {
+function equipSword() {
     let swords = [
         'iron_sword',
         'diamond_sword',
@@ -53,7 +55,7 @@ function equipSword(myBot) {
     }
 
     if (Tool.emptyJudge.isEmpty(sword)) {
-        Tool.msgFormat.logMsg(myBot, `身上没有铁级别以上的剑`)
+        Tool.msgFormat.logMsg(`身上没有铁级别以上的剑`)
         return
     }
     myBot.bot.equip(sword, "hand")

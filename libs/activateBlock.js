@@ -1,6 +1,7 @@
-/* 激活一次方块 */
+const { myBot } = require('../bot');
 
-async function actBlock(myBot, blockName, position = null) {
+/* 激活一次方块 */
+async function actBlock(blockName, position = null) {
     const mcData = require('minecraft-data')(myBot.bot.version);
 
     // 打印方块的位置

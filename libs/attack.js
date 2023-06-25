@@ -1,5 +1,8 @@
+const { myBot } = require("../bot")
+
+
 /* 攻击一次实体 */
-function atk(myBot, entityName) {
+function atk(entityName) {
 
     //过滤器
     let entityFilter
@@ -17,7 +20,7 @@ function atk(myBot, entityName) {
         entity = myBot.bot.nearestEntity(entityFilter)
     }
     if (!entity) {
-        Tool.msgFormat.logMsg(myBot, '没有实体可以攻击')
+        Tool.msgFormat.logMsg('没有实体可以攻击')
         return;
     }
     const pos = entity.position

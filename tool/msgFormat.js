@@ -1,3 +1,5 @@
+const { myBot } = require("../bot")
+
 /* 打印格式 */
 
 
@@ -7,12 +9,12 @@ function titleMsg(str) {
 }
 
 // 打印日志的格式
-function logMsg(myBot, str) {
+function logMsg(str) {
     console.log('\x1b[32m' + `[${Tool.getNowTime.nowtime()}]` + '\x1b[0m' + '\x1b[35m' + `<${myBot.botName}> ${str}` + '\x1b[0m')
 }
 
 // 错误信息格式
-function errMsg(myBot, str) {
+function errMsg(str) {
     console.log('\x1b[32m' + `[${Tool.getNowTime.nowtime()}]` + '\x1b[0m' + '\x1b[31m' + `<${myBot.botName}> ${str}` + '\x1b[0m')
 }
 

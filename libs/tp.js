@@ -1,9 +1,12 @@
+const { myBot } = require("../bot")
+
+
 /* 传送到某岛 */
-function tpWhere(myBot, where) {
+function tpWhere(where) {
     myBot.bot.chat(`/visit ${where}`)
 }
 /* 传送到某人所在岛 */
-function tpaWho(myBot, who) {
+function tpaWho(who) {
     myBot.bot.chat(`/is tp ${who}`)
 }
 

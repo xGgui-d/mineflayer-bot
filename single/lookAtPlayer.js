@@ -1,10 +1,12 @@
+const { myBot } = require("../bot")
+
 /* 看向周围最近的玩家 */
 
 let timer = null
 
-function startLookAtPlayer(myBot, entityName = 'player') {
+function startLookAtPlayer(entityName = 'player') {
     timer = setInterval(() => {
-        Lib.lookAt.lookAtNearestPlayer(myBot, entityName)
+        Lib.lookAt.lookAtNearestPlayer(entityName)
     }, 10)
 }
 

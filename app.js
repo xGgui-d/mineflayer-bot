@@ -32,6 +32,7 @@ console.log(`loading single module ...`)
 Single = {}
 Single.killAura = require('./single/killAura')
 Single.lookAtPlayer = require('./single/lookAtPlayer')
+Single.fisherman = require('./single/fisherman')
 
 console.log(`loading data module ...`)
 Data = {}
@@ -40,27 +41,17 @@ Data.headParameter = require('./data/headParameter')
 // 解除监听的限制
 require('events').EventEmitter.defaultMaxListeners = 0
 
-
-// 我的bot对象
-const myBot = {
-  bot: null,
-  hosterName: Data.headParameter.botInfo.hosterName,
-  botName: Data.headParameter.botInfo.botName,
-  // bot当前的工作
-  botWork: null,
-  botIsWork: false,
-  // bot建立的监听标志
-  botListener: {
-    windowOpen: false
-  }
-
-}
+// 获取bot对象
+const { myBot } = require('./bot')
 
 // 断开连接后保存当前的工作
 let lastwork = null
 
 /* 创建bot */
 function createBot() {
+
+  myBot.botName = Data.headParameter.botInfo.botName
+  myBot.hosterName = Data.headParameter.botInfo.hosterName
 
   myBot.bot = mineflayer.createBot({
     host: Data.headParameter.botInfo.host,
@@ -78,7 +69,7 @@ function createBot() {
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg(`BOTNAME: ${myBot.botName}`);
     // 执行掉线前的任务
-    Tool.switch.selectFunc(myBot, lastwork)
+    Tool.switch.selectFunc(lastwork)
 
   })
 
@@ -91,7 +82,7 @@ function createBot() {
     // 保存当前的工作
     lastwork = myBot.botWork
     // 停止当前工作
-    Tool.switch.selectFunc(myBot, myBot.botWork)
+    Tool.switch.selectFunc(myBot.botWork)
     // 删除所有建立的监听标志
     myBot.botListener['windowOpen'] = false
     setTimeout(() => {
@@ -112,12 +103,12 @@ function createBot() {
     }
   })
   myBot.bot.on('autoeat_started', () => {
-    Tool.msgFormat.logMsg(myBot, '开饭了,停止工作!')
+    Tool.msgFormat.logMsg('开饭了,停止工作!')
 
 
   })
   myBot.bot.on('autoeat_stopped', () => {
-    Tool.msgFormat.logMsg(myBot, '吃完了,开始工作!')
+    Tool.msgFormat.logMsg('吃完了,开始工作!')
 
   })
   myBot.bot.on('health', () => {
@@ -129,7 +120,7 @@ function createBot() {
 
   // 消息路由
   myBot.bot.on('message', (jsonMsg) => {
-    Tool.switch.switchFunc(myBot, jsonMsg)
+    Tool.switch.switchFunc(jsonMsg)
   })
 
 }

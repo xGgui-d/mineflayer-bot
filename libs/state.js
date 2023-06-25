@@ -1,13 +1,14 @@
-/* 展示 bot 状态 */
+const { myBot } = require("../bot")
 
-async function showLine(myBot,str) {
+/* 展示一行 */
+async function showLine(str) {
     await myBot.bot.chat(`/tell ${myBot.hosterName} ${str}`)
     await myBot.bot.waitForTicks(2)
 }
 
-//展示一次状态
-async function showState(myBot) {
-        await showLine(myBot,`<red>\
+/* 展示一次状态 */
+async function showState() {
+        await showLine(`<red>\
          生命值[<Aqua>${myBot.bot.health.toFixed(2)}</Aqua>]\
          饥饿值[<Aqua>${myBot.bot.food.toFixed(2)}</Aqua>]\
          等级[<Aqua>${myBot.bot.experience.level}</Aqua>]\
