@@ -61,8 +61,6 @@ function equipSword() {
     myBot.bot.equip(sword, "hand")
 }
 
-
-
 module.exports = {
     startKillWitherSkeleton, stopKillWitherSkeleton,
     startCollectBone, stopCollectBone

@@ -1,8 +1,9 @@
 const { myBot } = require("../bot")
+const { showPublic } = require("../data/headParameter")
 
-/* 命令路由函数 */
+/* 解析消息 */
 
-function switchFunc(jsonMsg) {
+function parseMsg(jsonMsg) {
     //命令发起者
     let username = null
     //命令
@@ -26,31 +27,28 @@ function switchFunc(jsonMsg) {
         head = command.split(' ')[0]
         select_1 = command.split(' ')[1]
         select_2 = command.split(' ')[2]
-
-        // console.log(`command.substr(4): ${command.substring(4)}`)
-        // console.log(`head: ${head}`)
-        // console.log(`select_1: ${select_1}`)
-        // console.log(`select_2: ${select_2}`)
-
-        Tool.msgFormat.logMsg(`收到命令: ${head} ${select_1} ${select_2}`)
-
     }
-    if (!Tool.emptyJudge.isEmpty(message))
+    //显示公屏聊天信息
+
+    if (!Tool.emptyJudge.isEmpty(message) && showPublic)
         Tool.msgFormat.publicMsg(message[0])
 
     // 判断是否是主人
-    if (username === myBot.hosterName)
-        myBot.bot.chat(`/tell ${myBot.hosterName} <green>『女仆收到你的命令啦！^_^』`)
-    else return
-    // 判断命令
-    selectFunc(head, command)
+    for (var name of botInfo.hosterName) {
+        if (username === name) {
+            myBot.bot.chat(`/tell ${myBot.hosterName} <green>『女仆收到你的命令啦！^_^』`)
+            myBot.hosterName = name
+            // 判断命令
+            selectFunc(head, command, select_1, select_2)
+        }
+    }
 }
 
-function selectFunc(head, command) {
+/* 命令路由 */
+function selectFunc(head, command, select_1, select_2) {
+
+    Tool.msgFormat.logMsg(`收到命令: ${head} ${select_1} ${select_2}`)
     switch (head) {
-        case 'menu':
-            Tool.task.onceTask(Lib.menu.showMenu, select_1)
-            break
         case 'sta':
             Tool.task.onceTask(Lib.state.showState)
             break
@@ -84,6 +82,9 @@ function selectFunc(head, command) {
         case 'atk':
             Tool.task.timerTask(Single.killAura.startKillAura, Single.killAura.stopKillAura, head, select_1)
             break
+        case 'ato_dpos':
+            Tool.task.timerTask(Single.autoDeposit.startCollectItem, Single.autoDeposit.startCollectItem, head, select_1, select_2)
+            break
         case 'pto_fire':
             Tool.task.timerTask(Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato, head)
             break
@@ -114,4 +115,4 @@ function selectFunc(head, command) {
     }
 }
 
-module.exports = { switchFunc, selectFunc }
+module.exports = { parseMsg, selectFunc }

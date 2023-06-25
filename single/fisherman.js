@@ -31,7 +31,7 @@ async function stopFishing() {
     }
 }
 
-/* 完成垂钓一次 */
+/* 监听处理 */
 async function onCollect(player, entity) {
 
     if (player === myBot.bot.entity && entity.kind) {

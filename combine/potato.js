@@ -52,7 +52,7 @@ async function startTossBoneMeal() {
         if (myBot.bot.time.timeOfDay > 2000 && myBot.bot.time.timeOfDay < 9000) {
             // 一次性投掷骨粉
             Lib.cloudInv.withdraw('bone_meal', 1728);
-            Lib.toss.toss('bone_meal', 1728);
+            //setTimeout(() => { try { Lib.toss.toss('bone_meal', 864) } catch (e) { } }, 500)
             count++
         } else {
             count = 0
@@ -74,8 +74,9 @@ async function startCollectPotato() {
         Lib.cloudInv.deposit('poisonous_potato', false)
         setTimeout(() => {
             Lib.cloudInv.deposit('potato', false)
-        }, 1000)
-    }, 2000) //最低2000
+        }, 2000)
+        console.log('当前时间刻：'+myBot.bot.time.timeOfDay)
+    }, 5000) //最低2000
 
 }
 

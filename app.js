@@ -1,6 +1,8 @@
 const mineflayer = require('mineflayer')
 const autoeat = require('mineflayer-auto-eat').plugin
 
+
+
 console.log(`loading tool modle ...`)
 Tool = {}
 Tool.msgFormat = require('./tool/msgFormat')
@@ -19,7 +21,7 @@ Lib.activateBlock = require('./lib/activateBlock')
 Lib.say = require('./lib/say')
 Lib.tp = require('./lib/tp')
 Lib.state = require('./lib/state')
-Lib.menu = require('./lib/menu')
+
 
 console.log(`loading combine module ...`)
 Combine = {}
@@ -33,6 +35,7 @@ Single = {}
 Single.killAura = require('./single/killAura')
 Single.lookAtPlayer = require('./single/lookAtPlayer')
 Single.fisherman = require('./single/fisherman')
+Single.autoDeposit = require('./single/autoDeposit')
 
 console.log(`loading data module ...`)
 Data = {}
@@ -51,47 +54,55 @@ let lastwork = null
 function createBot() {
 
   myBot.botName = Data.headParameter.botInfo.botName
-  myBot.hosterName = Data.headParameter.botInfo.hosterName
-
   myBot.bot = mineflayer.createBot({
     host: Data.headParameter.botInfo.host,
     port: Data.headParameter.botInfo.port,
     username: Data.headParameter.botInfo.username,
     password: Data.headParameter.botInfo.password,
     auth: Data.headParameter.botInfo.auth,
-    version: '1.18'
+    version: '1.19'
   });
+
+  var logSuccess = false
 
   //登录成功
   myBot.bot.once('login', () => {
     Tool.msgFormat.titleMsg('|***************************************|');
-    Tool.msgFormat.titleMsg('|***登录成功！欢迎使用梦幻女仆 BOT***|');
+    Tool.msgFormat.titleMsg('|****登录成功!!!欢迎使用梦幻女仆 BOT****|');
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg(`BOTNAME: ${myBot.botName}`);
     // 执行掉线前的任务
     Tool.switch.selectFunc(lastwork)
-
+    logSuccess = true
   })
 
+
   //登录失败
-  myBot.bot.on('error', () => Tool.msgFormat.errMsg('登录失败，正在尝试重新登录...'));
+  myBot.bot.on('error', () => {
+
+    logSuccess = false
+    Tool.msgFormat.errMsg('登录失败，请尝试重新登录...')
+    setTimeout(() => {
+      //再次创建bot
+      createBot()
+    }, 10000)
+
+  });
 
   //重启延迟60s
   myBot.bot.on('end', () => {
+    if (!logSuccess)
+      return
     Tool.msgFormat.errMsg('BOT已与服务器断开连接，正在重连...')
     // 保存当前的工作
     lastwork = myBot.botWork
     // 停止当前工作
     Tool.switch.selectFunc(myBot.botWork)
-    // 删除所有建立的监听标志
-    myBot.botListener['windowOpen'] = false
     setTimeout(() => {
       //再次创建bot
-      createBot();
+      createBot()
     }, 6000)
   });
-
-
 
   // 加载自动吃食物插件
   myBot.bot.loadPlugin(autoeat)
@@ -102,6 +113,7 @@ function createBot() {
       bannedFood: []
     }
   })
+  // !!!!
   myBot.bot.on('autoeat_started', () => {
     Tool.msgFormat.logMsg('开饭了,停止工作!')
 
@@ -118,9 +130,9 @@ function createBot() {
   })
 
 
-  // 消息路由
+  // 消息解析以及路由
   myBot.bot.on('message', (jsonMsg) => {
-    Tool.switch.switchFunc(jsonMsg)
+    Tool.switch.parseMsg(jsonMsg)
   })
 
 }

@@ -1,17 +1,14 @@
 /* 我的bot对象 */
 const myBot = {
+    // bot 对象
     bot: null,
-    hosterName: null,
+    // bot 当前命令的主人
+    hosterName: null, 
+    // bot 名字
     botName: null,
-    // bot当前的工作
+    // bot 当前的工作
     botWork: null,
     botIsWork: false,
-    // bot建立的监听标志
-    botListener: {
-      windowOpen: false,
-      playerCollect: false
-    }
-  
   }
 
  module.exports.myBot = myBot
