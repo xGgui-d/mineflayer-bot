@@ -34,7 +34,6 @@ async function startCampfirePotato() {
         myBot.bot.equip(items, "hand")
         actCampfire()
     }, 100)
-
 }
 
 /* 停止烤土豆 */
@@ -51,14 +50,13 @@ async function startTossBoneMeal() {
         // 村民 2000 时间开始工作到 9000 （ 一天 0-24000 ） during 350s
         if (myBot.bot.time.timeOfDay > 2000 && myBot.bot.time.timeOfDay < 9000) {
             // 一次性投掷骨粉
-            Lib.cloudInv.withdraw('bone_meal', 1728);
+            Lib.cloudInv.withdraw('bone_meal',1000);
             //setTimeout(() => { try { Lib.toss.toss('bone_meal', 864) } catch (e) { } }, 500)
             count++
         } else {
             count = 0
         }
     }, 18400) // 18.4s 丢一次1728
-
 }
 /* 停止定时丢骨粉 */
 async function stopTossBoneMeal() {

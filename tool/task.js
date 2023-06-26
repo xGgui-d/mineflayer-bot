@@ -1,21 +1,13 @@
 const { myBot } = require("../bot");
 /* 任务执行模块 */
 
-var task // 任务函数变量
+var task = null // 任务函数变量
 
+/* 执行任务 */
 function runTask(botWork, select) {
-
     if (!onceTask(botWork, select))
         timerTask(botWork, select)
 }
-
-// 任务数据结构体
-// var task_v = {
-//     mode: null,
-//     select: [],
-//     func: null
-// }
-
 
 //单次任务
 function onceTask(botWork, select) {
@@ -124,6 +116,7 @@ function selectTaskFunc(cmd, mode) {
             return __selectMode(Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton, mode)
         case 'ws_bone':
             return __selectMode(Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone, mode)
+        case 'test' :
         default:
             return null
     }

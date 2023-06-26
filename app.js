@@ -42,7 +42,7 @@ Data.headParameter = require('./data/headParameter')
 const prompt = require("prompt-sync")();
 let botInfo // bot 信息
 var showPublic // 是否显示公屏信息
-var input = prompt("请选择你的 bot? 1: xGgui 2: sakuraminooka 3: KLis21");
+var input = prompt("请选择你的女仆? 1: xGgui 2: sakuraminooka 3: KLis21");
 // 选择要登录的女仆
 switch (input) {
   case '1':
@@ -94,7 +94,7 @@ function createBot() {
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg('|****登录成功!!!欢迎使用梦幻女仆 BOT****|');
     Tool.msgFormat.titleMsg('|***************************************|');
-    Tool.msgFormat.titleMsg(`BOTNAME: ${myBot.botName} [待执行的 work: ${lastwork} ${lastwork_select}]`);
+    Tool.msgFormat.titleMsg(`女仆ID: ${myBot.botName} [待执行的 work: ${lastwork} ${lastwork_select}]`);
     // 执行上次的工作
     runLastWork()
     // 登录成功标志  
@@ -122,7 +122,7 @@ function createBot() {
   myBot.bot.on('end', () => {
     if (!logSuccess) //如果登录失败，那就不执行这个函数，去执行监视登录失败的函数
       return
-    Tool.msgFormat.errMsg(`BOT已与服务器断开连接, 正在尝试重连(${reconnectCount})\
+    Tool.msgFormat.errMsg(`女仆已与服务器断开连接, 正在尝试重连(${reconnectCount})\
     ... [待执行的 work: ${lastwork} ${lastwork_select}]`)
     // 保存当前工作
     saveCurrentWork()
@@ -157,7 +157,6 @@ function createBot() {
     if (myBot.bot.food === 20) myBot.bot.autoEat.disable()
     else myBot.bot.autoEat.enable()
   })
-
 
   // 消息解析以及路由
   myBot.bot.on('message', (jsonMsg) => {
