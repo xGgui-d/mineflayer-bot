@@ -57,7 +57,7 @@ async function startTossBoneMeal() {
         } else {
             count = 0
         }
-    }, 14000) // 14s 丢一次1728
+    }, 18400) // 18.4s 丢一次1728
 
 }
 /* 停止定时丢骨粉 */

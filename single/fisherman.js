@@ -16,7 +16,7 @@ async function startFishing() {
     } catch (err) {
         Tool.msgFormat.logMsg('钓鱼结束')
         // 停止当前的工作
-        Tool.switch.selectFunc(myBot.botWork)
+        Tool.switch.selectTask(myBot.botWork)
     }
 
 }
