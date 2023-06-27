@@ -1,6 +1,7 @@
 const { myBot } = require("../bot")
+const { showPublicMsg } = require("../data/headParameter")
 const { runTask } = require("./task")
-const showPublic = true
+
 
 /* 解析消息 */
 
@@ -32,7 +33,7 @@ function parseMsg(jsonMsg) {
 
     }
     //显示公屏聊天信息
-    if (!Tool.emptyJudge.isEmpty(message)&&showPublic)
+    if (!Tool.emptyJudge.isEmpty(message)&&showPublicMsg)
         Tool.msgFormat.publicMsg(message[0])
 
     // 判断是否是主人

@@ -117,6 +117,7 @@ function selectTaskFunc(cmd, mode) {
         case 'ws_bone':
             return __selectMode(Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone, mode)
         case 'test' :
+            return Lib.digger.digBlock
         default:
             return null
     }

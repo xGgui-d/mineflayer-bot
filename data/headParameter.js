@@ -1,4 +1,7 @@
 /**************************************************************/
+// 显示公屏聊天
+showPublicMsg = true
+
 botInfo = {
     // bot: xGgui
     botInfo_01: {
@@ -54,4 +57,4 @@ botInfo = {
     /**************************************************************/
 }
 
-module.exports = { botInfo }
+module.exports = { botInfo, showPublicMsg }

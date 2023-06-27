@@ -19,6 +19,7 @@ Lib.activateBlock = require('./lib/activateBlock')
 Lib.say = require('./lib/say')
 Lib.tp = require('./lib/tp')
 Lib.state = require('./lib/state')
+Lib.digger = require('./lib/digger')
 
 console.log(`loading combine module ...`)
 Combine = {}
@@ -40,8 +41,8 @@ Data.headParameter = require('./data/headParameter')
 
 
 const prompt = require("prompt-sync")();
-let botInfo // bot 信息
-var showPublic // 是否显示公屏信息
+let botInfo // bot信息
+
 var input = prompt("请选择你的女仆? 1: xGgui 2: sakuraminooka 3: KLis21");
 // 选择要登录的女仆
 switch (input) {
@@ -65,21 +66,32 @@ require('events').EventEmitter.defaultMaxListeners = 0
 // 获取bot对象
 const { myBot } = require('./bot')
 
-// 判断当前是否登录成功
-var logSuccess = false
-
-// 记录重连次数
-var reconnectCount = 0
-
 // 断开连接后保存当前的工作
 let lastwork = null
 let lastwork_select = []
 
+// 是否正在创建bot
+let isCreateBot = true
+// 设置定时器，用来重启bot
+let timer = null
+// 记录重连次数
+var reconnectCount = 0
+
+/* 重连bot */
+function reconnect() {
+  reconnectCount++
+  isCreateBot = true
+  timer = setInterval(createBot, 15000) // 15s重启一次
+}
+
 /* 创建bot */
 function createBot() {
+  if (!isCreateBot) {
+    clearInterval(timer)
+    return
+  }
   myBot.botInfo = botInfo
   myBot.botName = botInfo.botName
-
   myBot.bot = mineflayer.createBot({
     host: botInfo.host,
     port: botInfo.port,
@@ -87,53 +99,55 @@ function createBot() {
     password: botInfo.password,
     auth: botInfo.auth,
     version: '1.19'
-  });
+  })
 
-  //登录成功
-  myBot.bot.once('login', () => {
+  /* 登录成功 */
+  myBot.bot.on('login', () => {
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg('|****登录成功!!!欢迎使用梦幻女仆 BOT****|');
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg(`女仆ID: ${myBot.botName} [待执行的 work: ${lastwork} ${lastwork_select}]`);
     // 执行上次的工作
-    runLastWork()
-    // 登录成功标志  
-    logSuccess = true
+    runPreviousWork()
+    // 创建bot完毕 
+    isCreateBot = false
   })
 
+  /* 登录失败 */
+  myBot.bot.on('error', (err) => {
+    // 如果当前不在创建bot的话
+    if (!isCreateBot) {
+      Tool.msgFormat.errMsg(`女仆登录失败, 正在尝试重连(${reconnectCount})... [待执行的工作: ${lastwork} ${lastwork_select}]`)
+      Tool.msgFormat.errMsg(err)
+      // 保存当前工作
+      saveCurrentWork()
+      reconnect()
+    }
+  })
 
-  //登录失败
-  myBot.bot.on('error', () => {
-    // 登录失败标志
-    logSuccess = false
-    // 保存当前工作
-    saveCurrentWork()
-    Tool.msgFormat.errMsg(`登录失败, 正在尝试重新登录(${reconnectCount})\
-    ... [待执行的 work: ${lastwork} ${lastwork_select}]`)
-    setTimeout(() => {
-      //再次创建bot
-      createBot()
-      reconnectCount++
-    }, 10000)
+  /* 与服务器断开连接 */
+  myBot.bot.on('end', (reason) => {
+    if (!isCreateBot) {
+      Tool.msgFormat.errMsg(`女仆已与服务器断开连接, 正在尝试重连(${reconnectCount})... [待执行的工作: ${lastwork} ${lastwork_select}]`)
+      Tool.msgFormat.errMsg(reason)
+      // 保存当前工作
+      saveCurrentWork()
+      reconnect()
+    }
+  })
 
-  });
+  /* 被服务器踢出 */
+  myBot.bot.on('kicked', (reason) => {
+    if (!isCreateBot) {
+      Tool.msgFormat.errMsg(`女仆已被服务器踢出, 正在尝试重连(${reconnectCount})... [待执行的工作: ${lastwork} ${lastwork_select}]`)
+      Tool.msgFormat.errMsg(reason)
+      // 保存当前工作
+      saveCurrentWork()
+      reconnect()
+    }
+  })
 
-  //重启延迟6s
-  myBot.bot.on('end', () => {
-    if (!logSuccess) //如果登录失败，那就不执行这个函数，去执行监视登录失败的函数
-      return
-    Tool.msgFormat.errMsg(`女仆已与服务器断开连接, 正在尝试重连(${reconnectCount})\
-    ... [待执行的 work: ${lastwork} ${lastwork_select}]`)
-    // 保存当前工作
-    saveCurrentWork()
-    setTimeout(() => {
-      //再次创建bot
-      createBot()
-      reconnectCount++
-    }, 6000)
-  });
-
-  // 加载自动吃食物插件
+  /* 加载自动吃食物插件 */
   myBot.bot.loadPlugin(autoeat)
   myBot.bot.once('spawn', () => {
     myBot.bot.autoEat.options = {
@@ -142,15 +156,11 @@ function createBot() {
       bannedFood: []
     }
   })
-
-  // !!!!
   myBot.bot.on('autoeat_started', () => {
     Tool.msgFormat.logMsg('开饭了,停止工作!')
-    // saveCurrentWork()
   })
   myBot.bot.on('autoeat_stopped', () => {
     Tool.msgFormat.logMsg('吃完了,开始工作!')
-    // runLastWork()
   })
   myBot.bot.on('health', () => {
     //血量到达20，禁用插件
@@ -158,14 +168,17 @@ function createBot() {
     else myBot.bot.autoEat.enable()
   })
 
-  // 消息解析以及路由
+  /* 消息解析以及路由 */
   myBot.bot.on('message', (jsonMsg) => {
     Tool.switch.parseMsg(jsonMsg)
   })
-
 }
 
-/* 登录错误异常 */
+console.log(`login in server ...`)
+// 首次创建bot
+createBot()
+
+/* 登录错误异常处理 */
 function saveCurrentWork() {
   // 保存当前的工作
   if (myBot.botWork != null) {
@@ -175,11 +188,9 @@ function saveCurrentWork() {
   // 停止当前工作
   Tool.task.stopTimerTask(myBot.botWork, myBot.botSelect)
 }
-function runLastWork() {
+function runPreviousWork() {
   // 执行掉线前的任务
   if (lastwork != null)
     Tool.task.startTimerTask(lastwork, lastwork_select)
 }
 
-console.log(`login in server ...`)
-createBot()

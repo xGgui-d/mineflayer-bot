@@ -1,6 +1,9 @@
-// ========================
-// 烤土豆组合功能
-// ========================
+/* 
+ * 土豆机和烤土豆组合功能
+ * 定时烤土豆
+ * 定时扔骨粉
+ * 定时将土豆和毒土豆放入云仓
+ */
 
 const { myBot } = require("../bot")
 
@@ -73,7 +76,6 @@ async function startCollectPotato() {
         setTimeout(() => {
             Lib.cloudInv.deposit('potato', false)
         }, 2000)
-        console.log('当前时间刻：'+myBot.bot.time.timeOfDay)
     }, 5000) //最低2000
 
 }
