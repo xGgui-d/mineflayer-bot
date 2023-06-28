@@ -47,7 +47,6 @@ function equipSword() {
         'diamond_sword',
         'netherite_sword'
     ]
-
     let sword = null
     let tmp = null
     for (let i = 0; i < 3; i++) {

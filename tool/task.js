@@ -2,6 +2,7 @@ const { myBot } = require("../bot");
 /* 任务执行模块 */
 
 var task = null // 任务函数变量
+var mode = 'once'
 
 /* 执行任务 */
 function runTask(botWork, select) {
@@ -12,12 +13,11 @@ function runTask(botWork, select) {
 //单次任务
 function onceTask(botWork, select) {
     task = selectTaskFunc(botWork)
-    if (task != null) {
+    if (task != null && mode === 'once') {
         task(...select)
         Tool.msgFormat.logMsg(`执行了 ${task.name} 功能`)
         return true
     }
-    // myBot.bot.chat(`/tell ${myBot.hosterName} 这不是正确的命令哦！！！`)
     return false
 }
 
@@ -34,90 +34,103 @@ function timerTask(botWork, select) {
     }
 }
 
+
 /* 开启定时任务 */
 function startTimerTask(botWork, select) {
-    if (myBot.botIsWork)
-        return
-    task = selectTaskFunc(botWork, 'start')
-    if (task != null) {
-        myBot.botIsWork = true
-        myBot.botWork = botWork
-        myBot.botSelect = select
-        // 执行任务
-        task(...select)
-        Tool.msgFormat.logMsg(`执行了 ${task.name} 功能，[${botWork}] 任务开始执行`)
-    } else
-        myBot.bot.chat(`/tell ${myBot.hosterName} <red> 这不是正确的命令哦！！！`)
+    if (!myBot.botIsWork) {
+        mode = 'start'
+        task = selectTaskFunc(botWork)
+        if (task != null) {
+            myBot.botIsWork = true
+            myBot.botWork = botWork
+            myBot.botSelect = select
+            // 执行任务
+            task(...select)
+            Tool.msgFormat.logMsg(`执行了 ${task.name} 功能，[${botWork}] 任务开始执行`)
+        } else
+            myBot.bot.chat(`/tell ${myBot.hosterName} <red> 这不是正确的命令哦！！！`)
+    }
 }
 
 /* 停止定时任务 */
 function stopTimerTask(botWork, select) {
-    if (!myBot.botIsWork)
-        return
-    task = selectTaskFunc(botWork, 'stop')
-    if (task != null) {
-        myBot.botIsWork = false
-        myBot.botWork = null
-        myBot.botSelect = select
-        // 执行任务
-        task(...select)
-        Tool.msgFormat.logMsg(`执行了 ${task.name} 功能，[${botWork}] 任务结束执行`)
-    } else
-        myBot.bot.chat(`/tell ${myBot.hosterName} <red> 这不是正确的命令哦！！！`)
+    if (myBot.botIsWork) {
+        mode = 'stop'
+        task = selectTaskFunc(botWork)
+        if (task != null) {
+            myBot.botIsWork = false
+            myBot.botWork = null
+            myBot.botSelect = select
+            // 执行任务
+            task(...select)
+            Tool.msgFormat.logMsg(`执行了 ${task.name} 功能，[${botWork}] 任务结束执行`)
+        } else
+            myBot.bot.chat(`/tell ${myBot.hosterName} <red> 这不是正确的命令哦！！！`)
+    }
 }
 
 /* 根据命令选择任务 mode = start or stop*/
-function __selectMode(startFunc, stopFunc, mode) {
-    switch (mode) {
-        case 'start':
-            return startFunc
-        case 'stop':
-            return stopFunc
+function __selectMode(startFunc, stopFunc) {
+    // 根据实参判断任务类型
+    if (arguments.length == 1) {
+        // 单次任务
+        mode = 'once'
+        return startFunc
+    } else if (arguments.length == 2) {
+        // 定时任务
+        switch (mode) {
+            case 'start':
+                return startFunc
+            case 'stop':
+                return stopFunc
+        }
     }
 }
-function selectTaskFunc(cmd, mode) {
+function selectTaskFunc(cmd) {
 
     switch (cmd) {
         case 'sta':
-            return Lib.state.showState
+            return __selectMode(Lib.state.showState)
         case 'tpw':
-            return Lib.tp.tpWhere
+            return __selectMode(Lib.tp.tpWhere)
         case 'tpa':
-            return Lib.tp.tpaWho
+            return __selectMode(Lib.tp.tpaWho)
         case 'say':
-            return Lib.say.saySome
+            return __selectMode(Lib.say.saySome)
         case 'tossa':
-            return Lib.toss.tossAll
+            return __selectMode(Lib.toss.tossAll)
         case 'actblk':
-            return Lib.activateBlock.actBlock
+            return __selectMode(Lib.activateBlock.actBlock)
         case 'toss':
-            return Lib.toss.toss
+            return __selectMode(Lib.toss.toss)
         case 'dpos':
-            return Lib.cloudInv.deposit
+            return __selectMode(Lib.cloudInv.deposit)
         case 'look':
-            return __selectMode(Single.lookAtPlayer.startLookAtPlayer, Single.lookAtPlayer.stopLookAtPlayer, mode)
+            return __selectMode(Single.lookAtPlayer.startLookAtPlayer, Single.lookAtPlayer.stopLookAtPlayer)
         case 'fish':
-            return __selectMode(Single.fisherman.startFishing, Single.fisherman.stopFishing, mode)
+            return __selectMode(Single.fisherman.startFishing, Single.fisherman.stopFishing)
         case 'atk':
-            return __selectMode(Single.killAura.startKillAura, Single.killAura.stopKillAura, mode)
+            return __selectMode(Single.killAura.startKillAura, Single.killAura.stopKillAura)
         case 'ato_dpos':
-            return __selectMode(Single.autoDeposit.startCollectItem, Single.autoDeposit.startCollectItem, mode)
+            return __selectMode(Single.autoDeposit.startCollectItem, Single.autoDeposit.stopCollectItem)
         case 'pto_fire':
-            return __selectMode(Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato, mode)
+            return __selectMode(Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato)
         case 'pto_bonemeal':
-            return __selectMode(Combine.potato.startTossBoneMeal, Combine.potato.stopTossBoneMeal, mode)
+            return __selectMode(Combine.potato.startTossBoneMeal, Combine.potato.stopTossBoneMeal)
         case 'pto_potato':
-            return __selectMode(Combine.potato.startCollectPotato, Combine.potato.stopCollectPotato, mode)
+            return __selectMode(Combine.potato.startCollectPotato, Combine.potato.stopCollectPotato)
         case 'pil_kill':
-            return __selectMode(Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager, mode)
+            return __selectMode(Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager)
         case 'pil_emerald':
-            return __selectMode(Combine.pillager.startCollectEmerald, Combine.pillager.stopCollectEmerald, mode)
+            return __selectMode(Combine.pillager.startCollectEmerald, Combine.pillager.stopCollectEmerald)
         case 'ws_kill':
-            return __selectMode(Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton, mode)
+            return __selectMode(Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton)
         case 'ws_bone':
-            return __selectMode(Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone, mode)
-        case 'test' :
-            return Lib.digger.digBlock
+            return __selectMode(Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone)
+        case 'iro_iron':
+            return __selectMode(Combine.iron.startCollectIron, Combine.iron.stopCollectIron)
+        case 'test':
+            return __selectMode(Lib.digger.digBlock)
         default:
             return null
     }

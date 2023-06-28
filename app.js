@@ -27,6 +27,7 @@ Combine.potato = require('./combine/potato')
 Combine.pillager = require('./combine/pillager')
 Combine.witherSkeleton = require('./combine/witherSkeleton')
 Combine.zombiePig = require('./combine/zombiePig')
+Combine.iron = require('./combine/iron')
 
 console.log(`loading single module ...`)
 Single = {}
@@ -75,7 +76,7 @@ let isCreateBot = true
 // 设置定时器，用来重启bot
 let timer = null
 // 记录重连次数
-var reconnectCount = 0
+var reconnectCount = 1
 
 /* 重连bot */
 function reconnect() {

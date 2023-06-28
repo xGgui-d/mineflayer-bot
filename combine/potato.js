@@ -33,7 +33,6 @@ async function startCampfirePotato() {
         if (myBot.bot.inventory.emptySlotCount() === 0) {
             tossOther()
         }
-
         myBot.bot.equip(items, "hand")
         actCampfire()
     }, 100)
@@ -53,8 +52,7 @@ async function startTossBoneMeal() {
         // 村民 2000 时间开始工作到 9000 （ 一天 0-24000 ） during 350s
         if (myBot.bot.time.timeOfDay > 2000 && myBot.bot.time.timeOfDay < 9000) {
             // 一次性投掷骨粉
-            Lib.cloudInv.withdraw('bone_meal',1000);
-            //setTimeout(() => { try { Lib.toss.toss('bone_meal', 864) } catch (e) { } }, 500)
+            Lib.cloudInv.withdraw('bone_meal',1500);
             count++
         } else {
             count = 0
@@ -94,7 +92,6 @@ function tossItems(itemName) {
 async function tossOther() {
     //先扔掉与itemName不相同的物品
     var toItems = tossItems('potato')
-    //console.log(toItems);
     try {
         for (let i = 0; i < toItems.length; i++)
             await myBot.bot.toss(toItems[i].type, toItems[i].metadata, toItems[i].count)
