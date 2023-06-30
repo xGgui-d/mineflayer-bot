@@ -1,6 +1,6 @@
 const { myBot } = require("../bot")
 const { showPublicMsg } = require("../data/headParameter")
-const { runTask } = require("./task")
+const { runTask } = require("./tool_task")
 
 
 /* 解析消息 */

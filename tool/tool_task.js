@@ -10,7 +10,7 @@ function runTask(botWork, select) {
         timerTask(botWork, select)
 }
 
-//单次任务
+// 单次任务
 function onceTask(botWork, select) {
     task = selectTaskFunc(botWork)
     if (task != null && mode === 'once') {
@@ -21,7 +21,7 @@ function onceTask(botWork, select) {
     return false
 }
 
-//定时任务
+// 定时任务
 function timerTask(botWork, select) {
     // 如果bot当前没有工作
     if (!myBot.botIsWork) {
@@ -69,7 +69,7 @@ function stopTimerTask(botWork, select) {
     }
 }
 
-/* 根据命令选择任务 mode = start or stop*/
+// 根据命令选择任务 mode = start or stop
 function __selectMode(startFunc, stopFunc) {
     // 根据实参判断任务类型
     if (arguments.length == 1) {
@@ -90,47 +90,50 @@ function selectTaskFunc(cmd) {
 
     switch (cmd) {
         case 'sta':
-            return __selectMode(Lib.state.showState)
+            return __selectMode(OnceTask.state.showState)
         case 'tpw':
-            return __selectMode(Lib.tp.tpWhere)
+            return __selectMode(OnceTask.tp.tpWhere)
         case 'tpa':
-            return __selectMode(Lib.tp.tpaWho)
+            return __selectMode(OnceTask.tp.tpaWho)
         case 'say':
-            return __selectMode(Lib.say.saySome)
+            return __selectMode(OnceTask.say.saySome)
         case 'tossa':
-            return __selectMode(Lib.toss.tossAll)
-        case 'actblk':
-            return __selectMode(Lib.activateBlock.actBlock)
+            return __selectMode(OnceTask.toss.tossAll)
         case 'toss':
-            return __selectMode(Lib.toss.toss)
-        case 'dpos':
-            return __selectMode(Lib.cloudInv.deposit)
+            return __selectMode(OnceTask.toss.toss)
+        case 'equip':
+            return __selectMode(OnceTask.equipTool.equipTool)
         case 'look':
-            return __selectMode(Single.lookAtPlayer.startLookAtPlayer, Single.lookAtPlayer.stopLookAtPlayer)
+            return __selectMode(TimerTask.lookAtPlayer.startLookAtPlayer, TimerTask.lookAtPlayer.stopLookAtPlayer)
         case 'fish':
-            return __selectMode(Single.fisherman.startFishing, Single.fisherman.stopFishing)
+            return __selectMode(TimerTask.fisherman.startFishing, TimerTask.fisherman.stopFishing)
         case 'atk':
-            return __selectMode(Single.killAura.startKillAura, Single.killAura.stopKillAura)
-        case 'ato_dpos':
-            return __selectMode(Single.autoDeposit.startCollectItem, Single.autoDeposit.stopCollectItem)
-        case 'pto_fire':
+            return __selectMode(TimerTask.killAura.startKillAura, TimerTask.killAura.stopKillAura)
+        case 'dpos':
+            return __selectMode(TimerTask.deposit.startCollectItem, TimerTask.deposit.stopCollectItem)
+        case 'wdra':
+            return __selectMode(TimerTask.withdraw.startTossItem, TimerTask.withdraw.stopTossItem)
+        case 'dig':
+            return __selectMode(TimerTask.dig.startDigBlock, TimerTask.dig.stopDigBlock)
+        case 'place':
+            return __selectMode(TimerTask.place.startPlaceBlock, TimerTask.place.stopPlaceBlock)
+        case 'pto_fir':
             return __selectMode(Combine.potato.startCampfirePotato, Combine.potato.stopCampfirePotato)
-        case 'pto_bonemeal':
+        case 'pto_tos':
             return __selectMode(Combine.potato.startTossBoneMeal, Combine.potato.stopTossBoneMeal)
-        case 'pto_potato':
+        case 'pto_col':
             return __selectMode(Combine.potato.startCollectPotato, Combine.potato.stopCollectPotato)
-        case 'pil_kill':
+        case 'pil_kil':
             return __selectMode(Combine.pillager.startKillPillager, Combine.pillager.stopKillPillager)
-        case 'pil_emerald':
+        case 'pil_col':
             return __selectMode(Combine.pillager.startCollectEmerald, Combine.pillager.stopCollectEmerald)
-        case 'ws_kill':
+        case 'ws_kil':
             return __selectMode(Combine.witherSkeleton.startKillWitherSkeleton, Combine.witherSkeleton.stopKillWitherSkeleton)
-        case 'ws_bone':
+        case 'ws_col':
             return __selectMode(Combine.witherSkeleton.startCollectBone, Combine.witherSkeleton.stopCollectBone)
-        case 'iro_iron':
+        case 'iro_col':
             return __selectMode(Combine.iron.startCollectIron, Combine.iron.stopCollectIron)
         case 'test':
-            return __selectMode(Lib.digger.digBlock)
         default:
             return null
     }

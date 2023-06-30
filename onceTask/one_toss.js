@@ -18,7 +18,7 @@ async function toss(itemName, count) {
     var toItem = myBot.bot.inventory.items().filter((item) => item.name === itemName)
     try {
         await myBot.bot.toss(toItem[0].type, toItem[0].metadata, count)
-    } catch (e) { console.error(e) }
+    } catch (e) { Tool.msgFormat.errMsg('背包里没有该物品') }
 
 }
 

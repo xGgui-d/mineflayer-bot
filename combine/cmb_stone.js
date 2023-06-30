@@ -7,7 +7,7 @@ let timer_01 = null
 
 function startCollectCobbleStone() {
     timer_01 = setInterval(() => {
-        Lib.cloudInv.deposit('cobble_stone', true)
+        Lib.cloudInv.deposit('cobble_stone', 'true')
     }, 2000) //最低2000
 }
 

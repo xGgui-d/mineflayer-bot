@@ -35,7 +35,7 @@ async function startCampfirePotato() {
         }
         myBot.bot.equip(items, "hand")
         actCampfire()
-    }, 100)
+    }, 50) //50ms激活一次，也就是1tick
 }
 
 /* 停止烤土豆 */
@@ -70,10 +70,7 @@ async function stopTossBoneMeal() {
 async function startCollectPotato() {
     timer_03 = setInterval(() => {
         // 存入毒土豆和土豆
-        Lib.cloudInv.deposit('poisonous_potato', false)
-        setTimeout(() => {
-            Lib.cloudInv.deposit('potato', false)
-        }, 2000)
+        Lib.cloudInv.deposit(['poisonous_potato', 'potato'], 'false')
     }, 5000) //最低2000
 
 }

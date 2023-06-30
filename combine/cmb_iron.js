@@ -6,7 +6,7 @@ let timer_01 = null
 
 function startCollectIron() {
     timer_01 = setInterval(() => {
-        Lib.cloudInv.deposit('iron_ingot', true)
+        Lib.cloudInv.deposit('iron_ingot', 'true')
     }, 2000) //最低2000
 }
 

@@ -1,6 +1,6 @@
 const { myBot } = require("../bot")
 
-/* 展示一行 */
+// 展示一行
 async function showLine(str) {
     await myBot.bot.chat(`/tell ${myBot.hosterName} ${str}`)
     await myBot.bot.waitForTicks(2)

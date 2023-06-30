@@ -3,11 +3,11 @@ const { myBot } = require("../bot")
 /* 无差别攻击周围的敌人 */
 let timer
 /* 开始攻击周围敌人 */
-function startKillAura(entityName = 'hostile') {
+function startKillAura(entityName = 'hostile', interval) {
 
     timer = setInterval(() => {
         Lib.attack.atk(entityName)
-    }, 200)
+    }, interval)
 
 }
 

@@ -1,40 +1,50 @@
 const mineflayer = require('mineflayer')
 const autoeat = require('mineflayer-auto-eat').plugin
 
+// const inventoryViewer = require('mineflayer-web-inventory')
+
 console.log(`loading tool modle ...`)
 Tool = {}
-Tool.msgFormat = require('./tool/msgFormat')
-Tool.getNowTime = require('./tool/getNowTime')
-Tool.switch = require('./tool/parseMsg')
-Tool.task = require('./tool/task')
-Tool.emptyJudge = require('./tool/emptyJudge')
+Tool.msgFormat = require('./tool/tool_msgFormat')
+Tool.getNowTime = require('./tool/tool_getNowTime')
+Tool.switch = require('./tool/tool_parseMsg')
+Tool.task = require('./tool/tool_task')
+Tool.emptyJudge = require('./tool/tool_emptyJudge')
 
 console.log(`loading lib modle ...`)
 Lib = {}
-Lib.cloudInv = require('./lib/cloudInv')
-Lib.lookAt = require('./lib/lookAt')
-Lib.attack = require('./lib/attack')
-Lib.toss = require('./lib/toss')
-Lib.activateBlock = require('./lib/activateBlock')
-Lib.say = require('./lib/say')
-Lib.tp = require('./lib/tp')
-Lib.state = require('./lib/state')
-Lib.digger = require('./lib/digger')
+Lib.cloudInv = require('./lib/lib_cloudInv')
+Lib.lookAt = require('./lib/lib_lookAt')
+Lib.attack = require('./lib/lib_attack')
+Lib.activateBlock = require('./lib/lib_activateBlock')
+Lib.digger = require('./lib/lib_digger')
+
 
 console.log(`loading combine module ...`)
 Combine = {}
-Combine.potato = require('./combine/potato')
-Combine.pillager = require('./combine/pillager')
-Combine.witherSkeleton = require('./combine/witherSkeleton')
-Combine.zombiePig = require('./combine/zombiePig')
-Combine.iron = require('./combine/iron')
+Combine.potato = require('./combine/cmb_potato')
+Combine.pillager = require('./combine/cmb_pillager')
+Combine.witherSkeleton = require('./combine/cmb_witherSkeleton')
+Combine.zombiePig = require('./combine/cmb_zombiePig')
+Combine.iron = require('./combine/cmb_iron')
 
-console.log(`loading single module ...`)
-Single = {}
-Single.killAura = require('./single/killAura')
-Single.lookAtPlayer = require('./single/lookAtPlayer')
-Single.fisherman = require('./single/fisherman')
-Single.autoDeposit = require('./single/autoDeposit')
+console.log(`loading timerTask module ...`)
+TimerTask = {}
+TimerTask.killAura = require('./timerTask/tim_killAura')
+TimerTask.lookAtPlayer = require('./timerTask/tim_lookAtPlayer')
+TimerTask.fisherman = require('./timerTask/tim_fish')
+TimerTask.deposit = require('./timerTask/tim_deposit')
+TimerTask.withdraw = require('./timerTask/tim_withdraw')
+TimerTask.dig = require('./timerTask/tim_dig')
+TimerTask.place = require('./timerTask/tim_place')
+
+console.log(`loading onceTask module ...`)
+OnceTask = {}
+OnceTask.toss = require('./onceTask/one_toss')
+OnceTask.say = require('./onceTask/one_say')
+OnceTask.tp = require('./onceTask/one_tp')
+OnceTask.state = require('./onceTask/one_state')
+OnceTask.equipTool = require('./onceTask/one_equipTool')
 
 console.log(`loading data module ...`)
 Data = {}
@@ -108,6 +118,8 @@ function createBot() {
     Tool.msgFormat.titleMsg('|****登录成功!!!欢迎使用梦幻女仆 BOT****|');
     Tool.msgFormat.titleMsg('|***************************************|');
     Tool.msgFormat.titleMsg(`女仆ID: ${myBot.botName} [待执行的 work: ${lastwork} ${lastwork_select}]`);
+    // 连接网页，查看bot的背包情况 http://localhost:3000/
+    // inventoryViewer(myBot.bot)
     // 执行上次的工作
     runPreviousWork()
     // 创建bot完毕 
